@@ -8,6 +8,7 @@ def merge_sort(arr):
     merge_sort(left)
     merge_sort(right)
     merge_two_sorted_lists(left, right, arr)
+    
 
 def merge_two_sorted_lists(a, b, arr):
     i = j = k = 0
