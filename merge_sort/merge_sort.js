@@ -1,41 +1,93 @@
-function merge_sort(arr) {
-  if (arr.length <= 1) return arr;
+var arr = [6, 5, 3, 1, 8, 7, 2, 4];
 
-  let mid = Math.ceil(arr.length / 2);
-  left = arr.slice(0, mid);
-  right = arr.slice(mid);
+console.log("Original: ", arr);
 
-  return merge_two_sorted_lists(merge_sort(left), merge_sort(right));
+//Merge sort using recursion
+function mergeSortRecursion(unsortedArray) {
+  //There's no need to split/merge if there's only one element
+  if (unsortedArray.length <= 1) {
+    return unsortedArray;
+  }
+
+  //Now we divide the array in half
+  //we first need to find the middle point
+  //We use Math.floor to avoid decimals in an odd length array
+  const midPoint = Math.floor(unsortedArray.length / 2);
+
+  //Now we get the left and right part of the array
+  const leftArr = unsortedArray.slice(0, midPoint);
+  const rightArr = unsortedArray.slice(midPoint);
+
+  //Now we merge the two arrays using recursion to keep finding the left and right array.
+  return mergeTwoArrays(
+    mergeSortRecursion(leftArr),
+    mergeSortRecursion(rightArr)
+  );
 }
 
-function merge_two_sorted_lists(a, b) {
-  let i = 0;
-  let j = 0;
-  let arr = [];
+//Merge two arrays assuming both is already organized
+function mergeTwoArrays(leftArr, rightArr) {
+  console.log("Merging: ", leftArr, rightArr);
+  //We first make an var where we push the values into from the both array.
+  let resultArray = [];
+  //We also make two more index keeping track of the position of left and right array
+  //Since both arrays are organized, we'll move from the smallest number to the largest.
+  let leftIndex = 0,
+    rightIndex = 0;
 
-  while (i < a.length && j < b.length) {
-    if (a[i] <= b[j]) {
-      arr.push(a[i]);
-      i++;
-    } else {
-      arr.push(b[j]);
-      j++;
+  //We will keep merging as long as there's still numbers from any of the array unadded
+  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
+    //If the value on the left array is lower, we add that one into the result
+    if (leftArr[leftIndex] < rightArr[rightIndex]) {
+      console.log(
+        "Left is Smaller, we add ",
+        leftArr[leftIndex],
+        "from index",
+        leftIndex
+      );
+      resultArray.push(leftArr[leftIndex]);
+      leftIndex++; //Since we added the value from left index, lets increment it.
+    } //Otherwise, we add in the value of the right array.
+    else {
+      console.log(
+        "Right is Smaller, we add ",
+        rightArr[rightIndex],
+        "from index",
+        rightIndex
+      );
+      resultArray.push(rightArr[rightIndex]);
+      rightIndex++; //Since we added the value from right index, lets increment it.
     }
   }
 
-  while (i < a.length) {
-    arr.push(a[i]);
-    i++;
-    k++;
+  console.log(
+    "After while, LeftIndex: ",
+    leftIndex,
+    " RightIndex: ",
+    rightIndex
+  );
+
+  //However once one side is all finished, the other array is untouched
+  //So lets start by checking if it's the left side undefined and add it to the result
+  if (leftArr[leftIndex]) {
+    //We first start by getting all the unadded elements on the left
+    var unaddedElements = leftArr.slice(leftIndex);
+    console.log("Left unadded: ", unaddedElements);
+    //Then we push in the unadded elements using the spread operator
+    resultArray.push(...unaddedElements);
+  } //If it's not left, then it's for sure the right array
+  else {
+    //We first start by getting all the unadded elements on the right
+    var unaddedElements = rightArr.slice(rightIndex);
+    console.log("Right unadded: ", unaddedElements);
+    //Then we push in the unadded elements using the spread operator
+    resultArray.push(...unaddedElements);
   }
 
-  while (j < b.length) {
-    arr.push(b[j]);
-    j++;
-  }
-  return arr;
+  console.log("Final Arr: ", resultArray);
+  console.log(""); //Creating an empty Line break for easy of eye in console
+  return resultArray;
 }
 
-let elements = [5, 9, 2, 1, 67, 34, 88, 34];
-console.log("Sorted array : ");
-console.log(merge_sort(elements));
+var result = mergeSortRecursion(arr);
+console.log("Result:", result);
